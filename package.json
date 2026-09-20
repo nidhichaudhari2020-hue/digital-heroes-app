@@ -1,0 +1,7 @@
+{
+  "name": "impact-platform",
+  "private": true,
+  "scripts": { "dev": "next dev", "build": "next build", "start": "next start", "lint": "next lint" },
+  "dependencies": { "@supabase/ssr": "^0.5.2", "@supabase/supabase-js": "^2.49.1", "next": "^15.2.3", "react": "^19.0.0", "react-dom": "^19.0.0", "stripe": "^17.7.0", "zod": "^3.24.2" },
+  "devDependencies": { "@types/node": "^22", "@types/react": "^19", "typescript": "^5" }
+}
