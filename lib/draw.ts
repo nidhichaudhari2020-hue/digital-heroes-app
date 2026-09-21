@@ -1,5 +1,6 @@
 export type PrizeAllocation={five:number;four:number;three:number;nextJackpot:number};
 export function simulateDraw(): number[]{const pool=new Set<number>();while(pool.size<5)pool.add(Math.floor(Math.random()*45)+1);return [...pool].sort((a,b)=>a-b)}
+export function simulateWeightedDraw(scoreValues:number[]):number[]{const frequency=new Map<number,number>();scoreValues.filter(value=>Number.isInteger(value)&&value>=1&&value<=45).forEach(value=>frequency.set(value,(frequency.get(value)||0)+1));const candidates=Array.from({length:45},(_,index)=>index+1);const selected:number[]=[];while(selected.length<5&&candidates.length){const total=candidates.reduce((sum,value)=>sum+(frequency.get(value)||0)+1,0);let marker=Math.random()*total;let chosen=candidates[candidates.length-1];for(const value of candidates){marker-=(frequency.get(value)||0)+1;if(marker<=0){chosen=value;break;}}selected.push(chosen);candidates.splice(candidates.indexOf(chosen),1);}return selected.sort((a,b)=>a-b)}
 export function calculatePrizes(pool:number,jackpot:number,winners:{five:number;four:number;three:number}):PrizeAllocation{
   const fivePool=pool*.4+jackpot; return {five:winners.five?fivePool/winners.five:0,four:winners.four?pool*.35/winners.four:0,three:winners.three?pool*.25/winners.three:0,nextJackpot:winners.five?0:fivePool};
 }
