@@ -1,0 +1,1 @@
+{"compilerOptions":{"target":"ES2022","lib":["ES2022","DOM"],"module":"CommonJS","moduleResolution":"Node","esModuleInterop":true,"strict":true,"skipLibCheck":true,"outDir":".test-build","rootDir":".","noEmit":false},"include":["tests/**/*.ts","lib/billing.ts","lib/billing-webhook.ts","lib/draw.ts","lib/scores.ts","lib/pricing.ts"]}

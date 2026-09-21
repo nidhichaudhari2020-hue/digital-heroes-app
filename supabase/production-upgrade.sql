@@ -8,7 +8,7 @@ insert into public.charities (name, slug, description, is_featured) values
 on conflict (slug) do update set description = excluded.description;
 
 insert into public.draws (label, status, mode, prize_pool, rollover_jackpot, draw_date)
-values ('September 2026 draw', 'draft', 'random', 42800, 0, '2026-09-30 18:00:00+00')
+values ('September 2026 draw', 'draft', 'random', 0, 0, '2026-09-30 18:00:00+00')
 on conflict (label) do nothing;
 
 -- Preserve the charity picked during sign-up so the first successful
@@ -332,9 +332,11 @@ insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 values ('winner-proofs', 'winner-proofs', false, 5242880, array['image/jpeg','image/png','image/webp','application/pdf'])
 on conflict (id) do nothing;
 
+drop policy if exists "winner proof upload own folder" on storage.objects;
 create policy "winner proof upload own folder" on storage.objects for insert to authenticated with check (
   bucket_id = 'winner-proofs' and (storage.foldername(name))[1] = auth.uid()::text
 );
+drop policy if exists "winner proof view own folder" on storage.objects;
 create policy "winner proof view own folder" on storage.objects for select to authenticated using (
   bucket_id = 'winner-proofs' and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin())
 );
@@ -369,5 +371,7 @@ create table if not exists public.charity_events (
   created_at timestamptz not null default now()
 );
 alter table public.charity_events enable row level security;
+drop policy if exists "public charity events" on public.charity_events;
 create policy "public charity events" on public.charity_events for select using (true);
+drop policy if exists "admin charity events" on public.charity_events;
 create policy "admin charity events" on public.charity_events for all using (public.is_admin()) with check (public.is_admin());

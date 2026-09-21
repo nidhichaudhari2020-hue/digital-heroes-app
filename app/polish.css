@@ -1,0 +1,117 @@
+/* Release polish: readable density, accessible focus, honest demo context. */
+.demo-strip{padding:9px 20px;background:#e8eddf;color:#344b3b;text-align:center;font:500 10px/1.5 'DM Mono',monospace;letter-spacing:.35px}
+.site-header{position:sticky;top:0;background:rgba(247,244,236,.97);backdrop-filter:blur(14px)}
+.button{border-radius:7px;min-height:44px}.button:focus-visible,a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #8d7dff;outline-offset:4px}
+.hero-v2{max-width:1600px;margin:auto;min-height:630px}.hero-v2 h1{font-size:clamp(62px,7vw,108px);letter-spacing:-.065em;line-height:1}
+.hero-copy{max-width:435px}.hero-actions{flex-wrap:wrap}.impact-stat{margin-top:40px}.hero-art{min-height:620px}
+.hero-sun{background:radial-gradient(circle at 35% 30%,#ebffaf,#d4fa62 70%);box-shadow:inset 0 0 0 32px #ffffff20}
+.hero-sun:after{content:'FOR THE GREATER GOOD';position:absolute;top:19%;left:16%;font:500 11px 'DM Mono',monospace;letter-spacing:2px;transform:rotate(-12deg)}
+.score-float,.cause-float{border:1px solid #12252015;border-radius:14px}.cause-float{width:240px}.score-float{top:24%}
+.hero-art-caption{position:absolute;bottom:7%;left:15%;font:10px 'DM Mono',monospace;color:var(--muted)}
+.signal-grid article{border-radius:12px;border:1px solid var(--line);padding:22px;background:#fffdf86b}.signal-grid i{margin:22px 0}.signal-grid h3{font-size:25px}.signal-grid p{font-size:13px}
+.cause-showcase{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}.cause-showcase__card{border-radius:14px;transition:transform .2s}.cause-showcase__card:hover{transform:translateY(-5px)}
+.draw-widget{border-radius:14px;box-shadow:12px 12px 0 #ff6759}.draw-widget>div{gap:15px;align-items:center}.draw-widget>div b{font-size:21px}.draw-widget footer{font-size:9px;gap:16px;line-height:1.7}.draw-widget section{justify-content:space-between}
+.trust-notes{display:flex;gap:20px;flex-wrap:wrap;margin:24px 0 0;color:var(--muted);font-size:11px}.trust-notes span:before{content:'✓ ';color:var(--success);font-weight:800}
+.panel,.metric,.dashboard-section,.auth-card,.charity-card,.membership-plan{border-radius:12px}.panel,.metric{box-shadow:0 4px 14px #12252004}.panel small,.metric small{font-size:10px}.panel h3{font-size:27px}.panel p{font-size:13px}
+.dashboard-section{overflow-x:auto}.dashboard-section__head p{max-width:400px}.admin-form label,.score-form label,.choice-grid label,.profile-form label,.auth-card label{font-size:11px;line-height:1.6}
+.data-table{min-width:520px;font-size:13px}.data-table th{font-size:10px}.data-table tr:hover td{background:#d9ff5a15}.admin-action-row{flex-wrap:wrap}.admin-tabs{padding:5px 0}.admin-tabs button{border-radius:7px;min-height:44px}
+.billing-action{margin-top:14px}.billing-action .button{font-size:11px;padding:10px 12px}.billing-action .message{font-size:11px}.form-notice{padding:12px 14px;border-radius:7px;background:#fff0ec;color:#922f24;font-size:13px;line-height:1.6}
+.app-shell>.message,.toast-message{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:40;width:min(90vw,620px);padding:16px 20px;background:var(--ink);color:#fff;border-radius:10px;box-shadow:0 10px 30px #12252030;font-size:13px}
+.public-results{margin:45px auto;max-width:1040px;padding:30px;border:1px solid var(--line);border-radius:14px;background:var(--card)}.public-results h2{font-size:36px;margin:12px 0}.public-results .entry-numbers{margin:24px 0}.public-results p{font-size:14px;line-height:1.7;color:var(--muted)}
+.auth-card{box-shadow:0 24px 80px #1225200f}.auth-page h1{letter-spacing:-.06em;line-height:1.04}.auth-card input,.auth-card select{min-height:48px;border-radius:6px}.auth-card .message{font-family:Manrope,Arial,sans-serif;font-size:13px}
+.skip-link{position:absolute;left:16px;top:-100px;z-index:100;padding:12px;background:var(--ink);color:white}.skip-link:focus{top:10px}
+@media(max-width:900px){.hero-art{min-height:350px}.hero-v2 h1{font-size:clamp(60px,9vw,86px)}.hero-art-caption{bottom:4%;left:5%}.score-float{top:2%}}
+@media(max-width:620px){.demo-strip{font-size:8px}.hero-v2__content{padding-top:52px}.hero-v2 h1{font-size:clamp(52px,13vw,72px)}.hero-art{min-height:310px}.hero-art-caption{font-size:8px;bottom:0}.hero-sun{width:340px;top:0}.hero-sun:after{font-size:9px}.signal-grid{gap:14px}.signal-grid article{padding:22px}.draw-widget>div b{font-size:17px}.draw-widget footer{font-size:8px}.app-topbar{gap:14px;flex-wrap:wrap}.app-topbar nav{display:flex!important;gap:15px;flex-wrap:wrap}.app-topbar__label{display:none}.public-results{margin:24px 18px;padding:22px}.auth-card{margin-top:24px}.signup-impact{padding:12px}.membership-plan__price b{font-size:37px}.trust-notes{gap:12px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+/* =========================================
+   HOMEPAGE CAUSES
+========================================= */
+
+.home-causes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 48px;
+}
+
+.home-cause-card {
+  min-height: 330px;
+  padding: 24px;
+  border: 1px solid rgba(13, 48, 40, 0.16);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.home-cause-card:nth-child(1) {
+  background: #ff8e84;
+}
+
+.home-cause-card:nth-child(2) {
+  background: #d7ff45;
+}
+
+.home-cause-card:nth-child(3) {
+  background: #c9d9ff;
+}
+
+.home-cause-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px
+    rgba(13, 48, 40, 0.1);
+}
+
+.home-cause-number {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.home-cause-content h3 {
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 3vw, 3rem);
+  line-height: 1;
+}
+
+.home-cause-content p {
+  max-width: 320px;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.home-cause-content .text-link {
+  display: inline-block;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .home-causes-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .home-cause-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .home-causes-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 30px;
+  }
+
+  .home-cause-card {
+    min-height: 260px;
+  }
+
+  .home-cause-card:last-child {
+    grid-column: auto;
+  }
+}

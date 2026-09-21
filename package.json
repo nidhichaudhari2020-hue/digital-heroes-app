@@ -1,7 +1,31 @@
 {
   "name": "impact-platform",
   "private": true,
-  "scripts": { "dev": "next dev", "build": "next build", "start": "next start", "lint": "next lint" },
-  "dependencies": { "@supabase/ssr": "^0.5.2", "@supabase/supabase-js": "^2.49.1", "next": "^15.2.3", "react": "^19.0.0", "react-dom": "^19.0.0", "stripe": "^17.7.0", "zod": "^3.24.2" },
-  "devDependencies": { "@types/node": "^22", "@types/react": "^19", "typescript": "^5" }
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "npm run typecheck",
+    "test": "tsc -p tsconfig.test.json && node --test .test-build/tests/*.test.js",
+    "typecheck": "tsc --noEmit --incremental false"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.49.1",
+    "next": "^15.2.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "stripe": "^17.7.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "postcss": "^8.5.23"
+  }
 }

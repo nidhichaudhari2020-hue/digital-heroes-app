@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export function SiteHeader({ compact = false }: { compact?: boolean }) {
-  return <header className={`site-header ${compact ? "site-header--compact" : ""}`}>
+  return <><div className="demo-strip">EVALUATION BUILD · INR MEMBERSHIPS · SANDBOX PAYMENTS ONLY</div><header className={`site-header ${compact ? "site-header--compact" : ""}`}>
     <Link className="brand" href="/">impact<b>.</b></Link>
     <nav aria-label="Primary navigation">
       <Link href="/how-it-works">How it works</Link>
@@ -18,7 +18,7 @@ export function SiteHeader({ compact = false }: { compact?: boolean }) {
       </nav>
     </details>
     <Link className="button button--small" href="/auth">Join impact.</Link>
-  </header>;
+  </header></>;
 }
 
 export function SiteFooter() {
