@@ -19,6 +19,11 @@ export function MembershipButton({ plan }: { plan: MembershipPlan }) {
       const data = await response.json().catch(() => ({}));
       if (data.url) location.assign(data.url);
       else if (response.status === 401) location.assign(`/auth?plan=${plan}`);
+      else if (data.code === "CHARITY_REQUIRED") {
+        setError(data.error);
+        if (location.pathname !== "/dashboard") location.assign("/dashboard#charity-choice");
+        else document.getElementById("charity-choice")?.scrollIntoView({ behavior: "smooth" });
+      }
       else setError(data.error || "Unable to start checkout. Please try again.");
     } catch {
       setError("We could not open checkout. Check your connection and try again.");

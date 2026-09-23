@@ -10,10 +10,11 @@ export async function POST(request: Request) {
     const db = await createClient();
     const { data: { user } } = await db.auth.getUser();
     if (!user) return NextResponse.json({ error: "Please log in first." }, { status: 401 });
-    if (!billingConfigured()) return NextResponse.json({ error: "Sandbox checkout is awaiting configuration. No money has been charged. Please ask the administrator for evaluation access." }, { status: 503 });
+    if (!billingConfigured()) return NextResponse.json({ error: "Payments are unavailable because Stripe test billing is not configured. Please contact the administrator. No payment has been taken." }, { status: 503 });
     let payload: { plan?: string; charityId?: string; amount?: number };
     try { payload = await request.json(); } catch { return NextResponse.json({ error: "Invalid checkout request." }, { status: 400 }); }
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+    const returnUrl = appUrl(new URL(request.url).origin);
     const { data: existing, error: lookupError } = await db.from("subscriptions").select("stripe_customer_id").eq("user_id", user.id).not("stripe_customer_id", "is", null).order("created_at", { ascending: false }).limit(1).maybeSingle();
     if (lookupError) throw lookupError;
     const customer = existing?.stripe_customer_id;
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
       }
       const { data: choice, error } = await db.from("member_charities").select("charity_id,contribution_percent").eq("user_id", user.id).maybeSingle();
       if (error) throw error;
-      if (!choice) return NextResponse.json({ error: "Choose a charity in your dashboard before subscribing." }, { status: 400 });
+      if (!choice) return NextResponse.json({ error: "Choose and save a charity in your dashboard, then select your membership plan.", code: "CHARITY_REQUIRED" }, { status: 400 });
       const priceId = payload.plan === "monthly" ? process.env.STRIPE_MONTHLY_PRICE_ID : process.env.STRIPE_YEARLY_PRICE_ID;
       if (!priceId) return NextResponse.json({ error: "This sandbox membership price is not configured yet." }, { status: 503 });
       const price = await stripe.prices.retrieve(priceId);
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
         mode: "subscription", payment_method_types: ["card"], ...identity,
         line_items: [{ price: price.id, quantity: 1 }], client_reference_id: user.id,
         metadata: { user_id: user.id, plan: payload.plan }, subscription_data: { metadata: { user_id: user.id, plan: payload.plan } },
-        success_url: appUrl()+"/dashboard?checkout=success", cancel_url: appUrl()+"/dashboard?checkout=cancelled",
+        success_url: returnUrl+"/dashboard?checkout=success", cancel_url: returnUrl+"/dashboard?checkout=cancelled",
       }, { idempotencyKey: "membership-"+user.id+"-"+payload.plan+"-"+Math.floor(Date.now()/600000) });
       return NextResponse.json({ url: session.url });
     }
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
       mode: "payment", payment_method_types: ["card"], ...identity, client_reference_id: user.id,
       line_items: [{ price_data: { currency: "inr", unit_amount: Math.round(amount*100), product_data: { name: "Independent donation to "+charity.name } }, quantity: 1 }],
       metadata: { type: "independent_donation", user_id: user.id, charity_id: charity.id },
-      success_url: appUrl()+"/charities?donation=success", cancel_url: appUrl()+"/charities/"+charity.slug+"?donation=cancelled",
+      success_url: returnUrl+"/charities?donation=success", cancel_url: returnUrl+"/charities/"+charity.slug+"?donation=cancelled",
     });
     return NextResponse.json({ url: session.url });
   } catch { return NextResponse.json({ error: "Unable to start checkout. Please try again." }, { status: 502 }); }

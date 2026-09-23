@@ -40,6 +40,17 @@ test("PostgreSQL workflows and role boundaries (isolated database)",async(t)=>{
       await assert.rejects(asUser(member,"insert into scores(user_id,score_date,stableford_points) values($1,'2025-02-01',46)",[member]));
     });
     await t.test("member can edit a score and admin can read it",async()=>{await asUser(member,"update scores set stableford_points=38 where score_date='2025-01-06'");assert.equal((await asUser(admin,"select * from scores")).rows.length,5);});
+    await t.test("public visitors cannot read, insert, edit or delete scores",async()=>{
+      await db.query("select set_config('request.jwt.claim.sub','',false)");
+      await db.exec("set role anon");
+      try {
+        assert.equal((await db.query("select * from scores")).rows.length,0);
+        await assert.rejects(db.query("insert into scores(user_id,score_date,stableford_points) values($1,'2025-02-01',30)",[member]));
+        assert.equal((await db.query("update scores set stableford_points=1 returning id")).rows.length,0);
+        assert.equal((await db.query("delete from scores returning id")).rows.length,0);
+      } finally { await db.exec("reset role"); }
+      assert.equal((await db.query("select * from scores")).rows.length,5);
+    });
     await t.test("charity minimum, initial selection and ownership enforced",async()=>{
       await assert.rejects(asUser(member,"select choose_initial_charity($1,9)",[charity]));
       await asUser(member,"select choose_initial_charity($1,10)",[charity]);

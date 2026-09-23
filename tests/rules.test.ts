@@ -2,8 +2,21 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { addScore } from "../lib/scores";
 import { simulateDraw, simulateWeightedDraw, countMatches, calculatePrizes } from "../lib/draw";
-import { contributionAmount, subscriptionStatus, isActiveSubscription } from "../lib/billing";
+import { contributionAmount, subscriptionStatus, isActiveSubscription, appUrl, billingConfigured } from "../lib/billing";
 import { MEMBERSHIP_PLANS } from "../lib/pricing";
+
+test("checkout rejects placeholder credentials and returns to the current local port",()=>{
+  const keys = ["STRIPE_SECRET_KEY", "NEXT_PUBLIC_APP_URL", "VERCEL", "VERCEL_PROJECT_PRODUCTION_URL"];
+  const saved = keys.map(key=>process.env[key]);
+  try {
+    keys.forEach(key=>delete process.env[key]);
+    process.env.STRIPE_SECRET_KEY="sk_test_...";
+    assert.equal(billingConfigured(),false);
+    assert.equal(appUrl("http://localhost:3002/api/checkout"),"http://localhost:3002");
+    process.env.NEXT_PUBLIC_APP_URL="https://example.test";
+    assert.equal(appUrl("http://localhost:3002"),"https://example.test");
+  } finally { keys.forEach((key,index)=>{if(saved[index]===undefined)delete process.env[key];else process.env[key]=saved[index];}); }
+});
 
 test("scores retain the newest five in descending date order", () => {
   const scores = Array.from({length:5},(_,i)=>({date:`2025-01-0${i+1}`,points:30+i}));

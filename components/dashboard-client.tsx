@@ -128,6 +128,7 @@ export function DashboardClient({ userId, name }: { userId: string; name: string
   }
 
   async function removeScore(id: string) {
+    if (!active) { tell("An active membership is required to manage scores."); return; }
     if (!window.confirm("Delete this score?")) return;
     const { error } = await supabase.from("scores").delete().eq("id", id);
     if (error) tell(error.message);
@@ -217,14 +218,14 @@ export function DashboardClient({ userId, name }: { userId: string; name: string
     {!active && <section className="notice"><b>Activate your membership.</b> Choose a monthly or yearly INR plan to save scores, update your cause, and enter the next draw.</section>}
     {!active && <MembershipPlans compact />}
 
-    <section className="dashboard-section scores-panel">
+    {active ? <section className="dashboard-section scores-panel">
       <div className="dashboard-section__head"><div><p className="eyebrow eyebrow--light">YOUR LATEST FIVE</p><h2>Form tracker</h2></div><p>Stableford scores must be from 1 to 45. Duplicate dates are edited or deleted — never added twice.</p></div>
       <div className="score-list">{scores.map((item) => <div key={item.id}><div className="score">{item.points}<span>{dateLabel(item.date)}</span></div><div className="score-actions"><button className="icon-button" onClick={() => setEditing(item)}>EDIT</button><button className="icon-button" onClick={() => removeScore(item.id)}>DELETE</button></div></div>)}{!scores.length && <p className="empty-copy">No rounds saved yet. Add your first recent Stableford score below.</p>}</div>
       <form className="score-form" action={saveScore}><label>Date<input name="date" type="date" defaultValue={editing?.date || ""} key={`date-${editing?.id || "new"}`} required /></label><label>Stableford score<input name="points" type="number" min="1" max="45" defaultValue={editing?.points || ""} key={`points-${editing?.id || "new"}`} required placeholder="1 - 45" /></label><button className="button" disabled={!active}>{editing ? "Update score" : "Save score"}</button>{editing && <button type="button" className="button button--secondary" onClick={() => setEditing(null)}>Cancel</button>}</form>
-    </section>
+    </section> : <section className="dashboard-section"><h2>Member score tracker</h2><p>An active paid membership is required to add, edit, or delete golf scores.</p></section>}
 
     <div className="summary-grid">
-      <section className="dashboard-section"><div className="dashboard-section__head"><div><p className="eyebrow">CHARITY CONTRIBUTION</p><h2>Direct your impact</h2></div></div><div className="choice-grid"><label>Choose a charity<select value={choice} onChange={(event) => setChoice(event.target.value)} ><option value="">Select a cause</option>{charities.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label>Contribution %<input value={percentage} onChange={(event) => setPercentage(Number(event.target.value))} type="number" min="10" max="100" step="0.01" /></label><button className="button" type="button" onClick={saveCause}>Save choice</button></div></section>
+      <section id="charity-choice" className="dashboard-section"><div className="dashboard-section__head"><div><p className="eyebrow">CHARITY CONTRIBUTION</p><h2>Direct your impact</h2></div></div><div className="choice-grid"><label>Choose a charity<select value={choice} onChange={(event) => setChoice(event.target.value)} ><option value="">Select a cause</option>{charities.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label>Contribution %<input value={percentage} onChange={(event) => setPercentage(Number(event.target.value))} type="number" min="10" max="100" step="0.01" /></label><button className="button" type="button" onClick={saveCause}>Save choice</button></div></section>
       <section className="dashboard-section"><div className="dashboard-section__head"><div><p className="eyebrow">MONTHLY DRAW</p><h2>Your entry</h2></div><p>{draw ? `Select five unique numbers for ${draw.label}.` : "A draw will appear when the administrator opens it."}</p></div><div className="entry-numbers">{Array.from({ length: 45 }, (_, index) => index + 1).map((number) => <button type="button" className={`entry-number ${entry.includes(number) ? "entry-number--selected" : ""}`} onClick={() => toggleNumber(number)} key={number} disabled={!eligible}>{number}</button>)}</div><div className="entry-form"><span className="entry-count">{entry.length}/5 numbers selected</span><span /><button className="button" type="button" onClick={saveEntry} disabled={!eligible}>Save draw entry</button></div></section>
     </div>
 

@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     if (error) throw error;
     if (!data?.stripe_customer_id) return NextResponse.json({ error: "This evaluation membership has no Stripe billing account." }, { status: 404 });
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-    const portal = await stripe.billingPortal.sessions.create({ customer: data.stripe_customer_id, return_url: `${appUrl()}/dashboard` });
+    const portal = await stripe.billingPortal.sessions.create({ customer: data.stripe_customer_id, return_url: `${appUrl(new URL(request.url).origin)}/dashboard` });
     return NextResponse.json({ url: portal.url });
   } catch { return NextResponse.json({ error: "The billing portal is unavailable. Please ask the administrator to activate it in Stripe test mode." }, { status: 502 }); }
 }

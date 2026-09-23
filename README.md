@@ -60,7 +60,8 @@ Never commit `.env.local`, Stripe secret keys, or the Supabase service-role key.
 
 1. In a new Supabase project, run `supabase/schema.sql` in SQL Editor.
 2. Then run `supabase/production-upgrade.sql` once. This is required: it seeds the directory, creates the storage bucket, and installs the secure draw, eligibility, proof-review, and payout functions.
-3. In **Authentication → URL Configuration**, add:
+3. Run `supabase/release-hardening.sql` after the production upgrade. This is required for checkout onboarding (`choose_initial_charity`), billing cancellation state, and score validation.
+4. In **Authentication → URL Configuration**, add:
 
 ```text
 http://localhost:3000/auth/callback
