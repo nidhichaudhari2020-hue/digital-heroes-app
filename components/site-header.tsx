@@ -25,6 +25,6 @@ export function SiteFooter() {
   return <footer className="site-footer">
     <div><Link className="brand" href="/">impact<b>.</b></Link><p>Play your game. Move a cause forward.</p></div>
     <div className="footer-links"><Link href="/charities">Explore causes</Link><Link href="/draw">Monthly draw</Link><Link href="/auth">Member access</Link></div>
-    <small>© 2026 impact. Built for the Digital Heroes selection assignment.</small>
+    <small>© 2026 impact.</small>
   </footer>;
 }
